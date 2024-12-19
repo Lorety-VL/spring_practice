@@ -2,6 +2,7 @@ package com.springtest.controllers;
 
 import com.springtest.models.User;
 import com.springtest.services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllBooks() {
+    public List<User> getAllUsers() {
         return service.findAll();
     }
 
@@ -31,8 +32,27 @@ public class UserController {
         return service.save(user);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateUserData(@PathVariable int id, @RequestBody User user) {
+        Optional<User> localUser = service.findById(id).map( item -> {
+            item.setFirst_name(user.getFirst_name());
+            item.setLast_name(user.getLast_name());
+            item.setAge(user.getAge());
+            return service.save(item);
+        });
+        if (localUser.isEmpty()) {
+            return ResponseEntity.internalServerError().body("User does not exist");
+        }
+        return ResponseEntity.ok("Successfully updated");
+    }
+
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable int id) {
-        service.deleteById(id);
+    public ResponseEntity<String> deleteUser(@PathVariable int id) {
+        try {
+            service.deleteById(id);
+            return ResponseEntity.ok("User successfully deleted");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error or user already not exist");
+        }
     }
 }

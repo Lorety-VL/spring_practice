@@ -24,11 +24,15 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User save(User anime) {
-        return userRepository.save(anime);
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
-    public void deleteById(int id) {
+    public void deleteById(int id) throws Exception {
+        Optional<User> localUser = userRepository.findById(id);
+        if (localUser.isEmpty()) {
+            throw new Exception("User not found");
+        }
         userRepository.deleteById(id);
     }
 }
