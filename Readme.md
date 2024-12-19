@@ -1,6 +1,10 @@
 эндпоинт для запросов - localhost:8090/user
 
+название бд - postgres
+Название таблицы в бд - users
+
 модель данных:
+id = int
 first_name - String
 last_name - String
 age - int
